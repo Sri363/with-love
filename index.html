@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Little Love Quest 💕</title>
+  <!-- Lucide Icons & Canvas Confetti -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;800&family=Sacramento&display=swap" rel="stylesheet">
+ 
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #ffeef8 0%, #fff0f5 50%, #f0f4ff 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --primary: #ff5e8e;
+      --primary-hover: #ff3b75;
+      --secondary: #9d4edd;
+      --accent: #ffd166;
+      --text: #4a3e4d;
+      --text-light: #7b6f7e;
+      --shadow: 0 14px 35px rgba(255, 94, 142, 0.15);
+      --border-radius: 24px;
+    }
+ 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+ 
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 60px;
+      overflow-x: hidden;
+      position: relative;
+    }
+ 
+    .bg-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.25;
+      animation: floatUp 8s linear infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(105vh) scale(0.8) rotate(0deg); opacity: 0; }
+      20% { opacity: 0.3; }
+      80% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1.2) rotate(45deg); opacity: 0; }
+    }
+ 
+    .container {
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+ 
+    header {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    h1 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.9rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
+    }
+    p.subtitle {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+ 
+    .progress-bar-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      padding: 8px 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .progress-track {
+      height: 12px;
+      background: #f1e2ec;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #ff5e8e 100%);
+      border-radius: 10px;
+      transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .progress-text {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--secondary);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+ 
+    .stage-card {
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 22px 18px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+ 
+    .badge {
+      background: #ffe3ed;
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+ 
+    .quest-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.25rem;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+ 
+    .quest-hint {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+ 
+    .memory-box {
+      width: 100%;
+      height: 400px;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #2a202a;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 8px 25px rgba(0,0,0,0.08);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+ 
+    .memory-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: blur(28px) brightness(0.2) contrast(1.1);
+      opacity: 0.2;
+      transform: scale(1.15);
+      transition: filter 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                  opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                  transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+ 
+    .memory-box.unlocked .memory-img {
+      filter: blur(0px) brightness(1) contrast(1);
+      opacity: 1 !important;
+      transform: scale(1);
+    }
+ 
+    /* Shown if an Assets/Image_XX file is missing, instead of a broken-image icon */
+    .memory-img.img-missing {
+      opacity: 0 !important;
+    }
+    .missing-placeholder {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.75);
+      background: linear-gradient(135deg, #3a2a3a, #2a202a);
+      text-align: center;
+      padding: 20px;
+      z-index: 1;
+    }
+    .missing-placeholder.show { display: flex; }
+    .missing-placeholder span.fname {
+      font-family: monospace;
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.1);
+      padding: 3px 10px;
+      border-radius: 8px;
+    }
+ 
+    .lock-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: white;
+      background: rgba(15, 10, 20, 0.4);
+      backdrop-filter: blur(3px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 5;
+    }
+ 
+    .memory-box.unlocked .lock-overlay {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.1);
+    }
+ 
+    .lock-icon-wrap {
+      width: 65px;
+      height: 65px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(255, 94, 142, 0.5);
+      animation: pulse 2s infinite ease-in-out;
+    }
+ 
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 94, 142, 0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(255, 94, 142, 0.8); }
+    }
+ 
+    .quote-box {
+      width: 100%;
+      background: #fff6fa;
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: none;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .quote-box.show {
+      display: block;
+    }
+    .quote-text {
+      font-family: 'Sacramento', cursive;
+      font-size: 1.6rem;
+      color: #b02a5b;
+      line-height: 1.3;
+      text-align: center;
+    }
+ 
+    .puzzle-workspace {
+      width: 100%;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(255, 245, 250, 0.65);
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px dashed #ffd1dc;
+    }
+ 
+    .btn {
+      background: linear-gradient(135deg, var(--primary), #ff758c);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(255, 94, 142, 0.35);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 22px rgba(255, 94, 142, 0.5);
+    }
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+ 
+    /* Puzzles */
+    .slider-track-wrap {
+      width: 100%;
+      max-width: 300px;
+      position: relative;
+    }
+    input[type=range].heart-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      background: #ffd5e5;
+      height: 16px;
+      border-radius: 10px;
+      outline: none;
+    }
+    input[type=range].heart-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(255, 94, 142, 0.5);
+      border: 3px solid #fff;
+    }
+ 
+    .code-dial-wrap {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .dial-btn {
+      width: 50px;
+      height: 56px;
+      background: white;
+      border: 2px solid #ffb3c6;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.1s;
+    }
+    .dial-btn:active {
+      transform: scale(0.92);
+    }
+ 
+    .drag-item {
+      width: 60px;
+      height: 60px;
+      background: #fff;
+      border: 2px dashed var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      font-size: 1.7rem;
+      box-shadow: 0 4px 12px rgba(255, 94, 142, 0.2);
+      animation: bounce 2s infinite ease;
+      touch-action: none;
+    }
+    .drag-item:active {
+      cursor: grabbing;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .key-puzzle-arena {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      height: 130px;
+    }
+    .key-puzzle-arena .drag-item {
+      position: absolute;
+      left: 14px;
+      top: 38px;
+    }
+    .key-puzzle-arena .heart-chest {
+      position: absolute;
+      right: 14px;
+      top: 24px;
+    }
+    .heart-chest {
+      width: 90px;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 6px 14px rgba(255, 94, 142, 0.35));
+      transition: transform 0.25s ease, filter 0.25s ease;
+    }
+    .heart-chest svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .heart-chest .chest-emoji-lock {
+      position: absolute;
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+    .heart-chest.active {
+      transform: scale(1.15);
+      filter: drop-shadow(0 0 20px rgba(255, 94, 142, 0.8));
+    }
+ 
+    .puzzle-piece {
+      width: 56px;
+      height: 56px;
+      background: white;
+      border: 2px solid #ffb6c1;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s, border-color 0.3s;
+    }
+    .puzzle-piece.placed {
+      background: #ffeef8;
+      border-color: var(--primary);
+      transform: scale(1.08) rotate(-4deg);
+    }
+ 
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 52px);
+      gap: 8px;
+    }
+    .mem-card {
+      width: 52px;
+      height: 52px;
+      background: white;
+      border: 2px solid #ffb6c1;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .mem-card.flipped {
+      background: #ffeef8;
+      border-color: var(--primary);
+    }
+ 
+    .scratch-container {
+      position: relative;
+      width: 210px;
+      height: 90px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .scratch-secret {
+      position: absolute;
+      inset: 0;
+      background: #ffebee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--primary);
+      gap: 2px;
+    }
+    #scratchCanvas {
+      position: absolute;
+      inset: 0;
+      touch-action: none;
+    }
+ 
+    .tile-order-wrap {
+      display: flex;
+      gap: 8px;
+    }
+    .order-tile {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border: 2px solid var(--secondary);
+      border-radius: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--secondary);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+ 
+    .final-question-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+    .choice-btn {
+      background: white;
+      border: 2px solid #ff9ebb;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .choice-btn:hover {
+      background: #fff0f5;
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+ 
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      box-shadow: none;
+    }
+ 
+    .bg-name {
+      font-family: 'Sacramento', cursive;
+      font-weight: 400;
+      color: var(--primary);
+      text-shadow: 0 2px 8px rgba(255, 94, 142, 0.35);
+    }
+ 
+    .action-row {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+ 
+    footer.credit {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-align: center;
+      opacity: 0.7;
+    }
+ 
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--bg-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .intro-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .intro-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 40px 28px;
+      text-align: center;
+      max-width: 380px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+    }
+    .intro-emoji {
+      font-size: 2.6rem;
+      margin-bottom: 6px;
+    }
+    .intro-title {
+      font-family: 'Sacramento', cursive;
+      font-size: 2.8rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    .intro-sub {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+ 
+    .click-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.9s ease-out, opacity 0.9s ease-out;
+    }
+ 
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+ 
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-card">
+      <div class="intro-emoji">💌</div>
+      <h1 class="intro-title">Sowmi &amp; Sri</h1>
+      <p class="intro-sub">A little quest through 10 of our favorite memories, wrapped up in cute puzzles just for you.</p>
+      <button class="btn" id="startQuestBtn">
+        <span>Begin Our Love Quest</span>
+        <i data-lucide="heart" size="18" fill="#fff"></i>
+      </button>
+    </div>
+  </div>
+ 
+  <div id="bgHearts"></div>
+ 
+  <div class="container">
+    <header>
+      <h1><i data-lucide="sparkles"></i> Our Love Quest <i data-lucide="heart" fill="#ff5e8e"></i></h1>
+      <p class="subtitle">Solve the cute micro-puzzles to unlock our special moments!</p>
+    </header>
+ 
+    <!-- Progress Indicator -->
+    <div class="progress-bar-container">
+      <div class="progress-text">
+        <span id="stageLabel">Memory 1 of 10</span>
+        <span id="percentLabel">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+ 
+    <!-- Main Quest Stage Card -->
+    <div class="stage-card" id="mainCard">
+      <div class="badge" id="puzzleBadge">
+        <i data-lucide="key" size="16"></i> <span id="badgeText">Lock #1</span>
+      </div>
+ 
+      <h2 class="quest-title" id="stageTitle">The Moonlit Beach</h2>
+      <p class="quest-hint" id="stageHint">Slide all the way to 100% love to reveal this memory!</p>
+ 
+      <!-- Photo Display Box -->
+      <div class="memory-box" id="memoryBox">
+        <img src="" class="memory-img" id="memoryImg" alt="Our Memory" />
+        <div class="missing-placeholder" id="missingPlaceholder">
+          <i data-lucide="image-off" size="30"></i>
+          <span>Add this photo to your Assets folder:</span>
+          <span class="fname" id="missingFname">Assets/Image_01.jpg</span>
+        </div>
+        <div class="lock-overlay" id="lockOverlay">
+          <div class="lock-icon-wrap">
+            <i data-lucide="lock" size="30" id="lockIcon"></i>
+          </div>
+          <span style="font-weight: 700; letter-spacing: 0.5px; font-size: 0.95rem;">Locked with Love</span>
+        </div>
+      </div>
+ 
+      <!-- Love Quote Box -->
+      <div class="quote-box" id="quoteBox">
+        <p class="quote-text" id="quoteText">"Under the moon and stars, my favorite place is next to you."</p>
+      </div>
+ 
+      <!-- Puzzle Workspace -->
+      <div class="puzzle-workspace" id="puzzleWorkspace"></div>
+ 
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="btn btn-secondary" id="backBtn" style="display: none;" onclick="goToPrevStage()">
+          <i data-lucide="arrow-left" size="18"></i>
+          <span>Back</span>
+        </button>
+        <button class="btn" id="nextBtn" style="display: none;" onclick="goToNextStage()">
+          <span>Next Memory</span>
+          <i data-lucide="arrow-right" size="18"></i>
+        </button>
+      </div>
+    </div>
+ 
+    <footer class="credit">Made with 💗 — 10 memories, 10 mini puzzles</footer>
+  </div>
+ 
+  <script>
+    // ---------------------------------------------------------------
+    // Photos live in Assets/Image_01.jpg ... Assets/Image_10.jpg
+    // Rename your 10 photos to that exact pattern and drop them in
+    // the Assets folder next to this index.html file.
+    // ---------------------------------------------------------------
+    const stages = [
+      {
+        title: "Moonlit Night by the Shore",
+        hint: "Slide the love-o-meter all the way to 100% to unlock our moonlight pose!",
+        file: "Assets/Image_01.jpg",
+        quote: "“With you, every moonlit night feels like an eternal fairytale.”",
+        puzzleType: "slider"
+      },
+      {
+        title: "Beach Ride Adventure",
+        hint: "Crack the secret code! Enter our special 3-digit love pin [ 5 - 2 - 0 ] (I Love You)!",
+        file: "Assets/Image_02.jpg",
+        quote: "“Life is a joyful ride whenever you're holding onto me.”",
+        puzzleType: "dial",
+        targetCode: [5, 2, 0]
+      },
+      {
+        title: "Shadows & Silhouettes",
+        hint: "Tap the golden key to insert it into the heart lock and brighten our shadows!",
+        file: "Assets/Image_03.jpg",
+        quote: "“Even in shadows and silhouettes, our love shines the brightest.”",
+        puzzleType: "key"
+      },
+      {
+        title: "Our Casual Cozy Dinner",
+        hint: "Match the 2 cute pairs of emojis to reveal our dinner date smile!",
+        file: "Assets/Image_04.jpg",
+        quote: "“The best food and conversations are the ones shared with you.”",
+        puzzleType: "memory"
+      },
+      {
+        title: "That Cheeky Playful Glance",
+        hint: "Scratch the card surface below to uncover what I love about your smile!",
+        file: "Assets/Image_05.jpg",
+        quote: "“One glance from you and my whole world lights up.”",
+        puzzleType: "scratch"
+      },
+      {
+        title: "Park Bench Romance",
+        hint: "Tap the tiles in chronological order: [ 1 ➔ 4 ➔ 3 ] (I Love You)!",
+        file: "Assets/Image_06.jpg",
+        quote: "“Looking at you, I found what I've been searching for my entire life.”",
+        puzzleType: "sequence"
+      },
+      {
+        title: "Mirror Reflection & Joy",
+        hint: "Tap all 5 floating hearts to collect pure joy and unlock this happy reflection!",
+        file: "Assets/Image_07.jpg",
+        quote: "“Holding your hand is my all-time favorite habit.”",
+        puzzleType: "heartPop"
+      },
+      {
+        title: "Cool & Quirky Together",
+        hint: "Spin the wheel to hit the jackpot of cuteness!",
+        file: "Assets/Image_08.jpg",
+        quote: "“Being silly with you is my absolute favorite thing to do!”",
+        puzzleType: "slot"
+      },
+      {
+        title: "Family Smiles & Warmth",
+        hint: "Tap to assemble our sweet memories into one!",
+        file: "Assets/Image_09.jpg",
+        quote: "“Cherishing the warmest moments, laughter, and sweet pure happiness.”",
+        puzzleType: "assemble"
+      },
+      {
+        title: "The Ultimate Sweet Kiss 💋",
+        hint: "Answer the special question below to unlock the final treasure chest of love!",
+        file: "Assets/Image_10.jpg",
+        quote: "“Forever and always, you are my one and only sweet love. I Love You! 💖”",
+        puzzleType: "finalChoice"
+      }
+    ];
+ 
+    let currentStageIndex = 0;
+    const solvedStages = new Set();
+ 
+    function initBgHearts() {
+      const container = document.getElementById('bgHearts');
+      const symbols = ['❤️', '💖', '✨', '🌸', '💕'];
+      const names = ['Sowmi', 'Sri'];
+      const total = 22;
+      for (let i = 0; i < total; i++) {
+        const span = document.createElement('span');
+        const isName = Math.random() < 0.35;
+        span.className = isName ? 'bg-heart bg-name' : 'bg-heart';
+        span.textContent = isName
+          ? names[Math.floor(Math.random() * names.length)]
+          : symbols[Math.floor(Math.random() * symbols.length)];
+        span.style.left = Math.random() * 95 + 'vw';
+        span.style.animationDuration = (7 + Math.random() * 7) + 's';
+        span.style.animationDelay = (Math.random() * 6) + 's';
+        span.style.fontSize = isName ? (20 + Math.random() * 16) + 'px' : (16 + Math.random() * 20) + 'px';
+        container.appendChild(span);
+      }
+    }
+ 
+    function spawnClickHeart(x, y) {
+      const heart = document.createElement('span');
+      heart.className = 'click-heart';
+      heart.textContent = ['💖', '💕', '✨', '💗'][Math.floor(Math.random() * 4)];
+      heart.style.left = x + 'px';
+      heart.style.top = y + 'px';
+      heart.style.fontSize = (14 + Math.random() * 10) + 'px';
+      heart.style.opacity = '1';
+      document.body.appendChild(heart);
+      requestAnimationFrame(() => {
+        heart.style.transform = `translate(${Math.random() * 40 - 20}px, -60px) scale(1.4)`;
+        heart.style.opacity = '0';
+      });
+      setTimeout(() => heart.remove(), 950);
+    }
+    document.addEventListener('click', (e) => spawnClickHeart(e.clientX, e.clientY));
+ 
+    function updateProgress() {
+      const total = stages.length;
+      const progress = ((currentStageIndex) / total) * 100;
+      document.getElementById('progressFill').style.width = `${progress}%`;
+      document.getElementById('stageLabel').textContent = `Memory ${currentStageIndex + 1} of ${total}`;
+      document.getElementById('percentLabel').textContent = `${Math.round(progress)}%`;
+      document.getElementById('badgeText').textContent = `Stage #${currentStageIndex + 1}`;
+    }
+ 
+    function renderStage() {
+      updateProgress();
+      const stage = stages[currentStageIndex];
+ 
+      document.getElementById('stageTitle').textContent = stage.title;
+      document.getElementById('stageHint').textContent = stage.hint;
+ 
+      const memImg = document.getElementById('memoryImg');
+      const placeholder = document.getElementById('missingPlaceholder');
+      memImg.classList.remove('img-missing');
+      placeholder.classList.remove('show');
+      document.getElementById('missingFname').textContent = stage.file;
+ 
+      memImg.onerror = () => {
+        memImg.classList.add('img-missing');
+        placeholder.classList.add('show');
+      };
+      memImg.src = stage.file;
+ 
+      const memBox = document.getElementById('memoryBox');
+      const quoteBox = document.getElementById('quoteBox');
+      document.getElementById('quoteText').textContent = stage.quote;
+ 
+      const workspace = document.getElementById('puzzleWorkspace');
+      workspace.innerHTML = '';
+ 
+      const alreadySolved = solvedStages.has(currentStageIndex);
+ 
+      if (alreadySolved) {
+        memBox.classList.add('unlocked');
+        quoteBox.classList.add('show');
+        workspace.style.display = 'none';
+      } else {
+        memBox.classList.remove('unlocked');
+        quoteBox.classList.remove('show');
+        workspace.style.display = 'flex';
+ 
+        switch (stage.puzzleType) {
+          case 'slider': buildSliderPuzzle(workspace); break;
+          case 'dial': buildDialPuzzle(workspace, stage.targetCode); break;
+          case 'key': buildKeyPuzzle(workspace); break;
+          case 'memory': buildMemoryPuzzle(workspace); break;
+          case 'scratch': buildScratchPuzzle(workspace); break;
+          case 'sequence': buildSequencePuzzle(workspace); break;
+          case 'heartPop': buildHeartPopPuzzle(workspace); break;
+          case 'slot': buildSlotPuzzle(workspace); break;
+          case 'assemble': buildAssemblePuzzle(workspace); break;
+          case 'finalChoice': buildFinalChoicePuzzle(workspace); break;
+        }
+      }
+ 
+      updateActionButtons(alreadySolved);
+    }
+ 
+    function updateActionButtons(alreadySolved) {
+      const backBtn = document.getElementById('backBtn');
+      const nextBtn = document.getElementById('nextBtn');
+ 
+      backBtn.style.display = currentStageIndex > 0 ? 'inline-flex' : 'none';
+ 
+      if (alreadySolved) {
+        if (currentStageIndex < stages.length - 1) {
+          nextBtn.innerHTML = `<span>Next Memory</span><i data-lucide="arrow-right" size="18"></i>`;
+          nextBtn.onclick = goToNextStage;
+        } else {
+          nextBtn.innerHTML = `<span>You've Unlocked Everything! 💖</span>`;
+          nextBtn.onclick = () => {
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+            alert("I love you more than words can ever say! Happy moments forever! ❤️✨");
+          };
+        }
+        nextBtn.style.display = 'inline-flex';
+      } else {
+        nextBtn.style.display = 'none';
+      }
+ 
+      lucide.createIcons();
+    }
+ 
+    function onPuzzleSolved() {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff5e8e', '#ff9ebb', '#ffd166', '#a29bfe']
+      });
+ 
+      solvedStages.add(currentStageIndex);
+ 
+      document.getElementById('memoryBox').classList.add('unlocked');
+      document.getElementById('quoteBox').classList.add('show');
+      document.getElementById('puzzleWorkspace').style.display = 'none';
+ 
+      updateActionButtons(true);
+    }
+ 
+    function goToNextStage() {
+      if (currentStageIndex < stages.length - 1) {
+        currentStageIndex++;
+        renderStage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+ 
+    function goToPrevStage() {
+      if (currentStageIndex > 0) {
+        currentStageIndex--;
+        renderStage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+ 
+    function buildSliderPuzzle(container) {
+      container.innerHTML = `
+        <div style="font-weight: 700; color: #ff5e8e; font-size: 0.95rem;">Drag the heart to 100% ❤️</div>
+        <div class="slider-track-wrap">
+          <input type="range" min="0" max="100" value="10" class="heart-slider" id="loveSlider">
+        </div>
+      `;
+      const slider = document.getElementById('loveSlider');
+      slider.oninput = (e) => {
+        if (parseInt(e.target.value) >= 98) {
+          slider.value = 100;
+          slider.disabled = true;
+          onPuzzleSolved();
+        }
+      };
+    }
+ 
+    function buildDialPuzzle(container, target) {
+      let current = [0, 0, 0];
+      container.innerHTML = `
+        <div style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;">Tap numbers to set [ 5 - 2 - 0 ]:</div>
+        <div class="code-dial-wrap">
+          <div class="dial-btn" id="d0">0</div>
+          <div class="dial-btn" id="d1">0</div>
+          <div class="dial-btn" id="d2">0</div>
+        </div>
+      `;
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById(`d${i}`);
+        btn.onclick = () => {
+          current[i] = (current[i] + 1) % 10;
+          btn.textContent = current[i];
+          if (current.every((val, idx) => val === target[idx])) {
+            setTimeout(onPuzzleSolved, 250);
+          }
+        };
+      }
+    }
+ 
+    function buildKeyPuzzle(container) {
+      container.innerHTML = `
+        <div style="font-weight: 700; color: #ff5e8e; font-size: 0.9rem; text-align: center;">Drag the golden key into the heart-shaped chest 🔑💗</div>
+        <div class="key-puzzle-arena" id="keyArena">
+          <div class="drag-item" id="dragKey">🗝️</div>
+          <div class="heart-chest" id="heartChest">
+            <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ffb3c6"/>
+                  <stop offset="100%" stop-color="#ff5e8e"/>
+                </linearGradient>
+              </defs>
+              <path d="M50 84 C18 58 2 38 2 21 C2 6 16 -3 30 6 C39 12 45 19 50 27 C55 19 61 12 70 6 C84 -3 98 6 98 21 C98 38 82 58 50 84 Z" fill="url(#heartGrad)" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <span class="chest-emoji-lock" id="chestLock">🔒</span>
+          </div>
+        </div>
+        <p style="font-size: 0.78rem; color: #888; text-align: center;">(Tricky to drag? A quick tap on the key works too!)</p>
+      `;
+ 
+      const key = document.getElementById('dragKey');
+      const chest = document.getElementById('heartChest');
+      const arena = document.getElementById('keyArena');
+      const lockLabel = document.getElementById('chestLock');
+      let dragging = false;
+      let wasDragged = false;
+      let solved = false;
+      let grabOffsetX = 0, grabOffsetY = 0, homeLeft = 0, homeTop = 0;
+ 
+      // Remember the key's resting spot (arena-relative) so we can snap back to it.
+      const arenaRect0 = arena.getBoundingClientRect();
+      const keyRect0 = key.getBoundingClientRect();
+      homeLeft = keyRect0.left - arenaRect0.left;
+      homeTop = keyRect0.top - arenaRect0.top;
+ 
+      function within(el, x, y) {
+        const r = el.getBoundingClientRect();
+        return x >= r.left - 14 && x <= r.right + 14 && y >= r.top - 14 && y <= r.bottom + 14;
+      }
+ 
+      function solve() {
+        if (solved) return;
+        solved = true;
+        lockLabel.textContent = '💖';
+        chest.classList.add('active');
+        setTimeout(onPuzzleSolved, 300);
+      }
+ 
+      function pointerDown(e) {
+        if (solved) return;
+        dragging = true;
+        wasDragged = false;
+        key.setPointerCapture(e.pointerId);
+        key.style.animation = 'none';
+        key.style.transition = 'none';
+        const arenaRect = arena.getBoundingClientRect();
+        const keyRect = key.getBoundingClientRect();
+        grabOffsetX = e.clientX - keyRect.left;
+        grabOffsetY = e.clientY - keyRect.top;
+        key.style.left = (keyRect.left - arenaRect.left) + 'px';
+        key.style.top = (keyRect.top - arenaRect.top) + 'px';
+        key.style.zIndex = 999;
+      }
+ 
+      function pointerMove(e) {
+        if (!dragging) return;
+        wasDragged = true;
+        const arenaRect = arena.getBoundingClientRect();
+        const localX = e.clientX - arenaRect.left - grabOffsetX;
+        const localY = e.clientY - arenaRect.top - grabOffsetY;
+        key.style.left = localX + 'px';
+        key.style.top = localY + 'px';
+        chest.classList.toggle('active', within(chest, e.clientX, e.clientY));
+      }
+ 
+      function pointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+        if (within(chest, e.clientX, e.clientY)) {
+          const arenaRect = arena.getBoundingClientRect();
+          const chestRect = chest.getBoundingClientRect();
+          key.style.transition = 'all 0.3s ease';
+          key.style.left = (chestRect.left + chestRect.width / 2 - arenaRect.left - key.offsetWidth / 2) + 'px';
+          key.style.top = (chestRect.top + chestRect.height / 2 - arenaRect.top - key.offsetHeight / 2) + 'px';
+          key.style.transform = 'scale(0.5) rotate(20deg)';
+          key.style.opacity = '0';
+          solve();
+        } else {
+          key.style.transition = 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          key.style.left = homeLeft + 'px';
+          key.style.top = homeTop + 'px';
+          chest.classList.remove('active');
+          setTimeout(() => {
+            if (!solved) {
+              key.style.transition = '';
+              key.style.animation = 'bounce 2s infinite ease';
+            }
+          }, 350);
+        }
+      }
+ 
+      key.addEventListener('pointerdown', pointerDown);
+      key.addEventListener('pointermove', pointerMove);
+      key.addEventListener('pointerup', pointerUp);
+      key.addEventListener('pointercancel', pointerUp);
+ 
+      // Simple tap also works, as long as it wasn't a failed drag release
+      key.addEventListener('click', () => {
+        if (solved || wasDragged) { wasDragged = false; return; }
+        key.style.transform = 'scale(1.3) rotate(45deg)';
+        solve();
+      });
+    }
+ 
+    function buildMemoryPuzzle(container) {
+      const items = ['💖', '💖', '⭐', '⭐'];
+      items.sort(() => 0.5 - Math.random());
+      container.innerHTML = `
+        <div style="font-weight: 700; font-size: 0.9rem; color: #ff5e8e;">Find both matching pairs:</div>
+        <div class="memory-grid" id="memGrid"></div>
+      `;
+      const grid = document.getElementById('memGrid');
+      let selected = [];
+      let matchedCount = 0;
+ 
+      items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'mem-card';
+        card.dataset.val = item;
+        card.textContent = '❓';
+ 
+        card.onclick = () => {
+          if (card.classList.contains('flipped') || selected.length >= 2) return;
+          card.classList.add('flipped');
+          card.textContent = item;
+          selected.push(card);
+ 
+          if (selected.length === 2) {
+            if (selected[0].dataset.val === selected[1].dataset.val) {
+              matchedCount += 2;
+              selected = [];
+              if (matchedCount === 4) {
+                setTimeout(onPuzzleSolved, 400);
+              }
+            } else {
+              setTimeout(() => {
+                selected.forEach(c => {
+                  c.classList.remove('flipped');
+                  c.textContent = '❓';
+                });
+                selected = [];
+              }, 700);
+            }
+          }
+        };
+        grid.appendChild(card);
+      });
+    }
+ 
+    function buildScratchPuzzle(container) {
+      container.innerHTML = `
+        <div class="scratch-container">
+          <div class="scratch-secret">
+            <span>✨ You Are My World ✨</span>
+            <span style="font-size: 0.85rem; color: #888;">Unlocked!</span>
+          </div>
+          <canvas id="scratchCanvas" width="210" height="90"></canvas>
+        </div>
+        <p style="font-size: 0.8rem; color: #888;">Rub / scratch the card surface to reveal!</p>
+      `;
+ 
+      const canvas = document.getElementById('scratchCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ff9ebb';
+      ctx.fillRect(0, 0, 210, 90);
+      ctx.font = 'bold 14px Nunito';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText('✨ Rub with finger ✨', 105, 50);
+ 
+      let isDrawing = false;
+      let solved = false;
+      let lastCheck = 0;
+ 
+      function getScratchPercent() {
+        const w = canvas.width, h = canvas.height;
+        const data = ctx.getImageData(0, 0, w, h).data;
+        let cleared = 0, sampled = 0;
+        // Sample every 6th pixel's alpha channel — plenty accurate, much cheaper than reading all of it.
+        for (let i = 3; i < data.length; i += 4 * 6) {
+          sampled++;
+          if (data[i] === 0) cleared++;
+        }
+        return sampled ? cleared / sampled : 0;
+      }
+ 
+      function scratch(e) {
+        if (!isDrawing || solved) return;
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const x = (clientX - rect.left) * (canvas.width / rect.width);
+        const y = (clientY - rect.top) * (canvas.height / rect.height);
+ 
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 18, 0, Math.PI * 2);
+        ctx.fill();
+ 
+        const now = Date.now();
+        if (now - lastCheck > 120) {
+          lastCheck = now;
+          if (getScratchPercent() > 0.55) {
+            solved = true;
+            canvas.style.transition = 'opacity 0.5s ease';
+            canvas.style.opacity = '0';
+            setTimeout(onPuzzleSolved, 450);
+          }
+        }
+      }
+ 
+      canvas.addEventListener('mousedown', () => isDrawing = true);
+      canvas.addEventListener('touchstart', () => isDrawing = true);
+      window.addEventListener('mouseup', () => isDrawing = false);
+      window.addEventListener('touchend', () => isDrawing = false);
+      canvas.addEventListener('mousemove', scratch);
+      canvas.addEventListener('touchmove', scratch);
+    }
+ 
+    function buildSequencePuzzle(container) {
+      const order = [1, 4, 3];
+      let currentIdx = 0;
+      container.innerHTML = `
+        <div style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;">Tap in order [ 1 ] ➔ [ 4 ] ➔ [ 3 ]:</div>
+        <div class="tile-order-wrap">
+          <div class="order-tile" id="tile1">1</div>
+          <div class="order-tile" id="tile4">4</div>
+          <div class="order-tile" id="tile3">3</div>
+        </div>
+      `;
+      [1, 4, 3].forEach(num => {
+        const tile = document.getElementById(`tile${num}`);
+        tile.onclick = () => {
+          if (num === order[currentIdx]) {
+            tile.style.background = '#d4edda';
+            tile.style.borderColor = '#28a745';
+            tile.style.color = '#28a745';
+            currentIdx++;
+            if (currentIdx === order.length) {
+              setTimeout(onPuzzleSolved, 300);
+            }
+          } else {
+            currentIdx = 0;
+            [1, 4, 3].forEach(n => {
+              const t = document.getElementById(`tile${n}`);
+              t.style.background = 'white';
+              t.style.borderColor = 'var(--secondary)';
+              t.style.color = 'var(--secondary)';
+            });
+          }
+        };
+      });
+    }
+ 
+    function buildHeartPopPuzzle(container) {
+      let count = 0;
+      container.innerHTML = `
+        <div style="font-weight: 700; color: #ff5e8e; font-size: 0.9rem;">Pop all 5 hearts: (<span id="popCount">0</span>/5)</div>
+        <div style="display: flex; gap: 10px; font-size: 1.8rem;">
+          <span class="pop-heart" style="cursor: pointer;">💖</span>
+          <span class="pop-heart" style="cursor: pointer;">❤️</span>
+          <span class="pop-heart" style="cursor: pointer;">💕</span>
+          <span class="pop-heart" style="cursor: pointer;">💝</span>
+          <span class="pop-heart" style="cursor: pointer;">💓</span>
+        </div>
+      `;
+      const hearts = container.querySelectorAll('.pop-heart');
+      hearts.forEach(h => {
+        h.onclick = () => {
+          if (h.style.visibility !== 'hidden') {
+            h.style.visibility = 'hidden';
+            count++;
+            document.getElementById('popCount').textContent = count;
+            if (count === 5) {
+              setTimeout(onPuzzleSolved, 300);
+            }
+          }
+        };
+      });
+    }
+ 
+    function buildSlotPuzzle(container) {
+      container.innerHTML = `
+        <div style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;">Spin our love machine!</div>
+        <div style="display: flex; gap: 10px; font-size: 2rem; background: #fff; padding: 6px 16px; border-radius: 12px; border: 2px solid #ffb6c1;">
+          <span id="s1">❤️</span>
+          <span id="s2">⭐</span>
+          <span id="s3">✨</span>
+        </div>
+        <button class="btn" id="spinBtn" style="padding: 8px 20px; font-size: 0.9rem;">SPIN 🎰</button>
+      `;
+      const spinBtn = document.getElementById('spinBtn');
+      spinBtn.onclick = () => {
+        spinBtn.disabled = true;
+        let count = 0;
+        const interval = setInterval(() => {
+          const em = ['❤️', '💍', '💖', '👑', '🌸'];
+          document.getElementById('s1').textContent = em[Math.floor(Math.random()*em.length)];
+          document.getElementById('s2').textContent = em[Math.floor(Math.random()*em.length)];
+          document.getElementById('s3').textContent = em[Math.floor(Math.random()*em.length)];
+          count++;
+          if (count > 10) {
+            clearInterval(interval);
+            document.getElementById('s1').textContent = '💖';
+            document.getElementById('s2').textContent = '💖';
+            document.getElementById('s3').textContent = '💖';
+            setTimeout(onPuzzleSolved, 400);
+          }
+        }, 100);
+      };
+    }
+ 
+    function buildAssemblePuzzle(container) {
+      container.innerHTML = `
+        <div style="font-weight: 700; color: var(--primary); font-size: 0.9rem; text-align: center;">Tap all 3 puzzle pieces to click our memory into place:</div>
+        <div style="display: flex; gap: 12px;">
+          <div class="puzzle-piece" data-piece="1">🧩</div>
+          <div class="puzzle-piece" data-piece="2">🧩</div>
+          <div class="puzzle-piece" data-piece="3">🧩</div>
+        </div>
+      `;
+      let placed = 0;
+      container.querySelectorAll('.puzzle-piece').forEach(piece => {
+        piece.onclick = () => {
+          if (piece.classList.contains('placed')) return;
+          piece.classList.add('placed');
+          piece.textContent = '💖';
+          placed++;
+          if (placed === 3) {
+            setTimeout(onPuzzleSolved, 400);
+          }
+        };
+      });
+    }
+ 
+    function buildFinalChoicePuzzle(container) {
+      container.innerHTML = `
+        <div style="font-weight: 800; color: #ff5e8e; font-size: 1rem; text-align: center; margin-bottom: 4px;">
+          Question: "Who loves the other person more unconditionally?" 💖
+        </div>
+        <div class="final-question-grid">
+          <button class="choice-btn" onclick="finalSelection()">
+            <span>Option A:</span> <strong>I love you the most in the entire universe! 🌌</strong>
+          </button>
+          <button class="choice-btn" onclick="finalSelection()">
+            <span>Option B:</span> <strong>You love me beyond measure! 🥰</strong>
+          </button>
+          <button class="choice-btn" onclick="finalSelection()">
+            <span>Option C:</span> <strong>Both of us, equally and infinitely forever! ♾️💕</strong>
+          </button>
+        </div>
+      `;
+    }
+ 
+    function finalSelection() {
+      onPuzzleSolved();
+    }
+ 
+    window.addEventListener('DOMContentLoaded', () => {
+      initBgHearts();
+      renderStage();
+      lucide.createIcons();
+ 
+      const introOverlay = document.getElementById('introOverlay');
+      document.getElementById('startQuestBtn').addEventListener('click', () => {
+        introOverlay.classList.add('hidden');
+        confetti({ particleCount: 120, spread: 90, origin: { y: 0.4 } });
+      });
+    });
+  </script>
+</body>
+</html>
+ 
